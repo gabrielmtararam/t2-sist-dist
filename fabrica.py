@@ -26,3 +26,4 @@ class Fabrica:
         else:
             print(f"Linha {linha_nome} não encontrada na fábrica {self.nome}.")
             return None
+

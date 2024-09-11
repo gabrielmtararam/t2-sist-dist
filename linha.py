@@ -1,4 +1,5 @@
 from buffer import Buffer
+from produtos import Produto
 
 PRODUTOS = {'Pv1': [58, 98, 45, 65, 53, 11, 41, 46, 30, 35, 90, 65, 21, 58, 49, 2, 35, 70, 43, 47, 63, 13, 53, 17, 0, 1, 2, 3, 4,
          5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
@@ -19,15 +20,20 @@ class LinhaProducao:
     def __init__(self, nome, tamanho_buffer):
         self.nome = nome
         self.buffer = Buffer(tamanho_buffer)
-    
+
     def produzir(self, produto, estoque):
         if produto in PRODUTOS:
             for parte in PRODUTOS[produto]:
                 if estoque.decrementar(parte, 1):
                     self.buffer.adicionar((parte, 1))
-                    print(f"[{self.nome}] Produzido {produto.nome}, consumindo {1} de {parte}")
+                    print(f"[{self.nome}] Produzido {produto}, consumindo 1 de {parte}")
                 else:
-                    print(f"[{self.nome}] Estoque insuficiente de {parte}")
+                    print(f"[{self.nome}] Estoque insuficiente de {parte}. Solicitando reabastecimento.")
+                    # Integração com o sistema Kanban para reabastecimento
+                    estoque.verificar_nivel_kanban(parte)  # Solicita reabastecimento se necessário
+                    print(f"[{self.nome}] Aguardando reabastecimento de {parte}.")
+        else:
+            print(f"[{self.nome}] Produto {produto} não encontrado.")
     
     def consumir(self):
         item = self.buffer.consumir()

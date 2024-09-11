@@ -1,7 +1,7 @@
 from fabrica import Fabrica
 from estoque import Estoque
 
-# Configuração inicial
+# Configuração inicial das fábricas
 linhas_fabrica1 = {
     "linha1": {"tamanho_buffer": 100},
     "linha2": {"tamanho_buffer": 100},
@@ -21,9 +21,6 @@ linhas_fabrica2 = {
     "linha8": {"tamanho_buffer": 100},
 }
 
-
-
-
 fabrica1 = Fabrica("Fabrica 1", linhas_fabrica1)
 fabrica2 = Fabrica("Fabrica 2", linhas_fabrica2)
 
@@ -42,45 +39,57 @@ def main():
         exibir_opcoes()
         opcao = input("Digite o número da opção desejada: ")
 
-        if opcao == "1":
+        if opcao == "1":  # Produzir produto
             fabrica = input("Escolha a fábrica (1 ou 2): ")
-            linha = input(f"Escolha a linha da fábrica {fabrica}: ")
+            linha = input(f"Escolha o número da linha da fábrica {fabrica} (ex: 1 para linha1): ")
             produto = input("Escolha o produto (Pv1, Pv2, Pv3, Pv4, Pv5): ")
+
+            # Formata a linha corretamente com base no número inserido
+            linha_nome = f"linha{linha}"
+            
             if fabrica == "1":
-                fabrica1.produzir_em_linha(linha, produto, estoque)
+                fabrica1.produzir_em_linha(linha_nome, produto, estoque)
             elif fabrica == "2":
-                fabrica2.produzir_em_linha(linha, produto, estoque)
+                fabrica2.produzir_em_linha(linha_nome, produto, estoque)
             else:
                 print("Fábrica inválida.")
 
-        elif opcao == "2":
+        elif opcao == "2":  # Consumir buffer
             fabrica = input("Escolha a fábrica (1 ou 2): ")
-            linha = input(f"Escolha a linha da fábrica {fabrica}: ")
+            linha = input(f"Escolha o número da linha da fábrica {fabrica} (ex: 1 para linha1): ")
+
+            # Formata a linha corretamente com base no número inserido
+            linha_nome = f"linha{linha}"
+
             if fabrica == "1":
-                fabrica1.consumir_em_linha(linha)
+                fabrica1.consumir_em_linha(linha_nome)
             elif fabrica == "2":
-                fabrica2.consumir_em_linha(linha)
+                fabrica2.consumir_em_linha(linha_nome)
             else:
                 print("Fábrica inválida.")
 
-        elif opcao == "3":
+        elif opcao == "3":  # Verificar estoque
             parte = input("Digite o nome da parte para verificar o estoque: ")
             estoque_atual = estoque.verificar(parte)
             print(f"Estoque atual de {parte}: {estoque_atual}")
 
-        elif opcao == "4":
+        elif opcao == "4":  # Status dos Buffers
             fabrica = input("Escolha a fábrica (1 ou 2): ")
-            linha = input(f"Escolha a linha da fábrica {fabrica}: ")
+            linha = input(f"Escolha o número da linha da fábrica {fabrica} (ex: 1 para linha1): ")
+
+            # Formata a linha corretamente com base no número inserido
+            linha_nome = f"linha{linha}"
+
             if fabrica == "1":
-                status = fabrica1.status_buffer_linha(linha)
+                status = fabrica1.status_buffer_linha(linha_nome)
             elif fabrica == "2":
-                status = fabrica2.status_buffer_linha(linha)
+                status = fabrica2.status_buffer_linha(linha_nome)
             else:
                 print("Fábrica inválida.")
             if status is not None:
-                print(f"Status do buffer da {linha} da {fabrica}: {status} itens")
+                print(f"Status do buffer da {linha_nome} da {fabrica}: {status} itens")
 
-        elif opcao == "5":
+        elif opcao == "5":  # Sair
             print("Encerrando simulação.")
             break
 
