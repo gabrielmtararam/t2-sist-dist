@@ -35,6 +35,7 @@ class LinhaProducao:
                     print(f"[{self.nome}] Aguardando reabastecimento de {parte}.")
                     produziu = False
             if produziu:
+                print(f"produziu {produto} {qtd}")
                 estoque_produtos.incrementar(produto, qtd)
         else:
             print(f"[{self.nome}] Produto {produto} não encontrado.")

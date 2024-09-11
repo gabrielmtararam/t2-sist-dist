@@ -35,6 +35,8 @@ def exibir_opcoes():
     print("3. Verificar EstoquePartes")
     print("4. Status dos Buffers")
     print("5. Sair")
+    print("6. Verificar estoque de produto")
+
 
 def main():
     while True:
@@ -93,6 +95,12 @@ def main():
 
         elif opcao == "5":  # Sair
             print("Encerrando simulação.")
+            break
+
+        elif opcao == "6":  # Sair
+            produto = input("Escolha o produto (Pv1, Pv2, Pv3, Pv4, Pv5): ")
+
+            print(f"qtd em estoque do PV1 {estoque_produtos.verificar(produto)}")
             break
 
         else:
