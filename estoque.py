@@ -1,8 +1,8 @@
 import redis
 from warehouse import Warehouse
 
-class Estoque:
-    def __init__(self, host='172.18.0.2', port=6379):
+class EstoquePartes:
+    def __init__(self, host='172.20.0.2', port=6379):
         self.redis = redis.Redis(host=host, port=port, db=0)
         # Níveis para controle Kanban
         self.kanban_niveis = {
@@ -41,3 +41,25 @@ class Estoque:
         # Envia ordem de reabastecimento para o warehouse
         warehouse = Warehouse(self.redis)
         warehouse.processar_reabastecimento(parte)
+
+
+
+
+class EstoqueProdutos:
+    def __init__(self, host='172.20.0.2', port=6379):
+        self.redis = redis.Redis(host=host, port=port, db=0)
+        # Níveis para controle K
+
+    def incrementar(self, produto, quantidade):
+        atual = int(self.redis.get(produto) or 0)
+        self.redis.set(produto, atual + quantidade)
+
+    def decrementar(self, produto, quantidade):
+        atual = int(self.redis.get(produto) or 0)
+        if atual >= quantidade:
+            self.redis.set(produto, atual - quantidade)
+            return True
+        return False
+
+    def verificar(self, produto):
+        return int(self.redis.get(produto) or 0)

@@ -5,10 +5,10 @@ class Fabrica:
         self.nome = nome
         self.linhas = {nome: LinhaProducao(nome, config["tamanho_buffer"]) for nome, config in linhas_config.items()}
     
-    def produzir_em_linha(self, linha_nome, produto, estoque):
+    def produzir_em_linha(self, linha_nome, produto, estoque_partes, estoque_produtos, qtd):
         linha = self.linhas.get(linha_nome)
         if linha:
-            linha.produzir(produto, estoque)
+            linha.produzir(produto, estoque_partes, estoque_produtos, qtd)
         else:
             print(f"Linha {linha_nome} não encontrada na fábrica {self.nome}.")
     

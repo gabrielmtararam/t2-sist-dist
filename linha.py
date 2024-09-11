@@ -21,17 +21,21 @@ class LinhaProducao:
         self.nome = nome
         self.buffer = Buffer(tamanho_buffer)
 
-    def produzir(self, produto, estoque):
+    def produzir(self, produto, estoque_partes, estoque_produtos, qtd):
+        produziu = True
         if produto in PRODUTOS:
             for parte in PRODUTOS[produto]:
-                if estoque.decrementar(parte, 1):
-                    self.buffer.adicionar((parte, 1))
+                if estoque_partes.decrementar(parte, qtd):
+                    self.buffer.adicionar((parte, qtd))
                     print(f"[{self.nome}] Produzido {produto}, consumindo 1 de {parte}")
                 else:
-                    print(f"[{self.nome}] Estoque insuficiente de {parte}. Solicitando reabastecimento.")
+                    print(f"[{self.nome}] EstoquePartes insuficiente de {parte}. Solicitando reabastecimento.")
                     # Integração com o sistema Kanban para reabastecimento
-                    estoque.verificar_nivel_kanban(parte)  # Solicita reabastecimento se necessário
+                    estoque_partes.verificar_nivel_kanban(parte)  # Solicita reabastecimento se necessário
                     print(f"[{self.nome}] Aguardando reabastecimento de {parte}.")
+                    produziu = False
+            if produziu:
+                estoque_produtos.incrementar(produto, qtd)
         else:
             print(f"[{self.nome}] Produto {produto} não encontrado.")
     

@@ -1,5 +1,6 @@
+from estoque import EstoqueProdutos
 from fabrica import Fabrica
-from estoque import Estoque
+from estoque import EstoquePartes
 
 # Configuração inicial das fábricas
 linhas_fabrica1 = {
@@ -24,13 +25,14 @@ linhas_fabrica2 = {
 fabrica1 = Fabrica("Fabrica 1", linhas_fabrica1)
 fabrica2 = Fabrica("Fabrica 2", linhas_fabrica2)
 
-estoque = Estoque()
+estoque_partes = EstoquePartes()
+estoque_produtos = EstoqueProdutos()
 
 def exibir_opcoes():
     print("Escolha uma opção:")
     print("1. Produzir produto")
     print("2. Consumir buffer")
-    print("3. Verificar estoque")
+    print("3. Verificar EstoquePartes")
     print("4. Status dos Buffers")
     print("5. Sair")
 
@@ -46,11 +48,11 @@ def main():
 
             # Formata a linha corretamente com base no número inserido
             linha_nome = f"linha{linha}"
-            
+            qtd_produzir = 10
             if fabrica == "1":
-                fabrica1.produzir_em_linha(linha_nome, produto, estoque)
+                fabrica1.produzir_em_linha(linha_nome, produto, estoque_partes, estoque_produtos, qtd_produzir)
             elif fabrica == "2":
-                fabrica2.produzir_em_linha(linha_nome, produto, estoque)
+                fabrica2.produzir_em_linha(linha_nome, produto, estoque_partes, estoque_produtos, qtd_produzir)
             else:
                 print("Fábrica inválida.")
 
@@ -68,10 +70,10 @@ def main():
             else:
                 print("Fábrica inválida.")
 
-        elif opcao == "3":  # Verificar estoque
-            parte = input("Digite o nome da parte para verificar o estoque: ")
-            estoque_atual = estoque.verificar(parte)
-            print(f"Estoque atual de {parte}: {estoque_atual}")
+        elif opcao == "3":  # Verificar EstoquePartes
+            parte = input("Digite o nome da parte para verificar o EstoquePartes: ")
+            EstoquePartes_atual = EstoquePartes.verificar(parte)
+            print(f"EstoquePartes atual de {parte}: {EstoquePartes_atual}")
 
         elif opcao == "4":  # Status dos Buffers
             fabrica = input("Escolha a fábrica (1 ou 2): ")
