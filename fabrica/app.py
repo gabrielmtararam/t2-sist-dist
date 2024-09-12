@@ -9,19 +9,13 @@ import sys
 rabbitmq_host = 'rabbitmq'
 exchange = 'direct_exchange'
 
-# Nome do container é passado como argumento (container1 ou container2)
+
 container_name = "fabrica"
 container_deposito_produtos = 'deposito'
 container_estoque = 'estoque'
 container_linha = 'linha_producao'
 qtd_producao = 0
 
-def publish_message(channel, message):
-    # Converter a mensagem em string e garantir codificação correta
-    if not isinstance(message, str):
-        message = str(message)
-    channel.basic_publish(exchange=exchange, routing_key=container_deposito_produtos, body=message.encode('utf-8'))
-    print(f"{container_name} published: {message}")
 
 def receber_ordem_producao(produto, qtd):
     global qtd_producao
@@ -54,23 +48,15 @@ def receber_produto(produto, qtd):
     channel = connection.channel()
     channel.basic_publish(exchange=exchange, routing_key=container_deposito_produtos, body=json_message)
     print(f"{container_name} published: {json_message} to {container_deposito_produtos}", flush=True)
-# def publish_initial_message(channel):
-#     # Enviar a primeira mensagem assim que o container iniciar
-#     message = f"Initial message from {container_name} to {target_container}"
-#     publish_message(channel, message)
 
 def consume_messages():
-    # Configurar um canal separado para consumo
+    
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
     channel = connection.channel()
 
-    # Declarar a fila do container
     channel.queue_declare(queue=container_name)
-
-    # Ligar a fila à exchange com a chave de roteamento apropriada
     channel.queue_bind(exchange=exchange, queue=container_name, routing_key=container_name)
 
-    # Função callback para processar mensagens recebidas
     def callback(ch, method, properties, body):
         message = json.loads(body)
         print(f"{container_name} received: {message}", flush=True)
@@ -84,7 +70,6 @@ def consume_messages():
 
 
 def setup_rabbitmq():
-    # Configuração do RabbitMQ (conexão e canais)
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
     channel = connection.channel()
 
@@ -93,24 +78,14 @@ def setup_rabbitmq():
 
     # Declarar fila específica para este container
     channel.queue_declare(queue=container_name)
-
-    # Ligar a fila à exchange com a chave de roteamento apropriada
     channel.queue_bind(exchange=exchange, queue=container_name, routing_key=container_name)
 
 
 def main():
     # Configuração do RabbitMQ
     setup_rabbitmq()
-    print("#########################main", flush=True)
-    # Enviar uma mensagem inicial assim que o container for iniciado
-    # receber_ordem_producao("Pv1",5)
 
-
-    # Thread para publicar mensagens periodicamente
-
-    # Consumir mensagens
     consume_messages()
 
 if __name__ == '__main__':
     main()
-print("#############################################abriu a fabrica", flush=True)
